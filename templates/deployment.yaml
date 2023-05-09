@@ -1,0 +1,38 @@
+{{- range $time := .Values.tests }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: init-deploy
+    container: {{ . }}-sec-deploy
+  name: {{ . }}-sec-deploy
+spec:
+  selector:
+    matchLabels:
+      container: {{ . }}-sec-deploy
+  template:
+    metadata:
+      labels:
+        app: init-deploy
+        container: {{ . }}-sec-deploy
+    spec:
+      initContainers:
+      - image: busybox
+        name: init
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "sleep {{ . }}" ]
+        resources:
+          requests:
+            cpu: .2
+            memory: 100m
+      containers:
+      - image: busybox
+        name: delay
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "sleep 300" ]
+        resources:
+          requests:
+            cpu: .2
+            memory: 100Mi
+{{- end }}

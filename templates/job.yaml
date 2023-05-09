@@ -1,0 +1,33 @@
+{{- range $time := .Values.tests }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: init-job
+    container: {{ . }}-sec-job
+  name: {{ . }}-sec-job
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - image: busybox
+        name: init
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "sleep {{ . }}" ]
+        resources:
+          requests:
+            cpu: .2
+            memory: 100m
+      containers:
+      - image: busybox
+        name: delay
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "sleep 300" ]
+        resources:
+          requests:
+            cpu: .2
+            memory: 100Mi
+{{- end }}
