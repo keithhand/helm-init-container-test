@@ -1,0 +1,7 @@
+# creates an init-container with each specified duration
+tests:
+  - 30
+  - 60
+  - 180
+  - 300
+  - 600
